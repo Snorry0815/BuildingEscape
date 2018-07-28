@@ -40,16 +40,14 @@ void UGrabber::BindGrabActions()
 	}
 }
 
-
 void UGrabber::Grab()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Grabbing!"));
-
 	auto hit = GetFirstPhysicsBodyInReach();
 	auto* hitComp = hit.GetComponent();
 	if (hitComp)
 	{
 		PhysicsHandleComp->GrabComponentAtLocation(hitComp, NAME_None, hitComp->GetOwner()->GetActorLocation());
+		SetCollisionToGrabbedObject(hitComp, true);
 	}
 }
 
@@ -97,9 +95,24 @@ bool UGrabber::GetGrabbingLine(FVector& out_LineStart, FVector& out_LineEnd) con
 	return true;
 }
 
+void UGrabber::SetCollisionToGrabbedObject(UPrimitiveComponent* HitComp, bool Ignore)
+{
+	if (HitComp == nullptr)
+		return;
+
+	auto* root = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
+	if (root == nullptr)
+		return;
+
+	root->IgnoreComponentWhenMoving(HitComp, Ignore);
+	HitComp->IgnoreComponentWhenMoving(root, Ignore);
+}
+
 void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Release!"));
+	SetCollisionToGrabbedObject(PhysicsHandleComp->GetGrabbedComponent(), false);
+	PhysicsHandleComp->ReleaseComponent();
 }
 
 // Called every frame

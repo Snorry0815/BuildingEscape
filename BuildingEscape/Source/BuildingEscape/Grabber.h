@@ -24,6 +24,7 @@ protected:
 	void FindPhysicsHandleComponent();
 	FHitResult GetFirstPhysicsBodyInReach() const;
 	bool GetGrabbingLine(FVector& out_LineStart, FVector& out_LineEnd) const;
+	void SetCollisionToGrabbedObject(UPrimitiveComponent* HitComp, bool Ignore);
 
 	void Grab();
 	void Release();
