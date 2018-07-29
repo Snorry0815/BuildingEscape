@@ -24,10 +24,7 @@ void UOpenDoor::OpenDoor()
 		return;
 
 	bDoorIsOpen = true;
-
-	auto* owner = GetOwner();
-	FRotator rot(0.f, OpenAngleInDegree, 0.f);
-	owner->AddActorWorldRotation(rot);
+	OnOpenRequest.Broadcast();
 }
 
 void UOpenDoor::CloseDoor()
@@ -36,9 +33,7 @@ void UOpenDoor::CloseDoor()
 		return;
 
 	bDoorIsOpen = false;
-	auto* owner = GetOwner();
-	FRotator rot(0.f, -OpenAngleInDegree, 0.f);
-	owner->AddActorWorldRotation(rot);
+	OnCloseRequest.Broadcast();
 }
 
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
